@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#ff6b00">
+<meta name="description" content="PK MART - Online Shopping">
+<title>PK MART | Online Shopping</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;background:#f5f6f8;color:#222}
+button,input,select{font:inherit}
+button{cursor:pointer;border:0}
+a{text-decoration:none;color:inherit}
+
+.top{background:#111;color:#fff;text-align:center;padding:7px;font-size:13px}
+.header{background:#fff;position:sticky;top:0;z-index:50;box-shadow:0 2px 8px #0001}
+.nav{max-width:1250px;margin:auto;padding:12px 18px;display:flex;align-items:center;gap:15px}
+.logo{font-size:27px;font-weight:900;color:#ff6200;white-space:nowrap}
+.logo span{color:#111}
+.search{flex:1;display:flex;background:#f1f3f5;border-radius:10px;overflow:hidden}
+.search input{width:100%;border:0;background:transparent;padding:13px;outline:0}
+.search button{background:#ff6b00;color:white;padding:0 20px}
+.navbtn{background:white;font-weight:bold;padding:10px}
+.badge{background:#ff6200;color:#fff;border-radius:20px;padding:2px 7px;font-size:11px}
+
+.container{max-width:1250px;margin:auto;padding:18px}
+.hero{height:310px;border-radius:18px;overflow:hidden;position:relative;background:linear-gradient(120deg,#ff6b00,#ffb000);color:white;display:flex;align-items:center;padding:45px}
+.hero h1{font-size:43px;margin-bottom:12px}
+.hero p{font-size:18px;margin-bottom:20px}
+.hero button{background:white;color:#e85d00;padding:13px 23px;border-radius:8px;font-weight:bold}
+.dots{position:absolute;bottom:15px;left:0;right:0;text-align:center}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#fff8;margin:4px}
+.dot.active{background:white}
+
+.section{margin-top:25px}
+.title{display:flex;justify-content:space-between;align-items:center;margin-bottom:13px}
+.title h2{font-size:22px}
+.categories{display:grid;grid-template-columns:repeat(8,1fr);gap:12px}
+.cat{background:#fff;border-radius:12px;padding:15px 7px;text-align:center;box-shadow:0 2px 7px #0000000a}
+.cat .icon{font-size:30px;margin-bottom:7px}
+.cat b{font-size:13px}
+
+.products{display:grid;grid-template-columns:repeat(5,1fr);gap:15px}
+.card{background:#fff;border-radius:13px;overflow:hidden;box-shadow:0 2px 8px #0001;position:relative;transition:.2s}
+.card:hover{transform:translateY(-3px)}
+.pic{height:205px;background:#f1f1f1;position:relative}
+.pic img{width:100%;height:100%;object-fit:cover}
+.discount{position:absolute;left:8px;top:8px;background:#0a9b45;color:#fff;padding:5px 7px;border-radius:5px;font-size:11px;font-weight:bold}
+.heart{position:absolute;right:8px;top:8px;background:white;width:34px;height:34px;border-radius:50%;font-size:19px}
+.info{padding:12px}
+.name{font-weight:bold;line-height:1.35;height:38px;overflow:hidden}
+.rating{color:#f59e0b;font-size:13px;margin:7px 0}
+.price{font-size:20px;font-weight:900}
+.mrp{text-decoration:line-through;color:#888;font-size:12px;margin-left:5px}
+.add{width:100%;margin-top:10px;padding:10px;border-radius:7px;background:#ff6b00;color:white;font-weight:bold}
+.stock{font-size:12px;color:#078b3d;margin-top:5px}
+
+.deal{background:#111;color:white;border-radius:15px;padding:20px}
+.timer{font-size:22px;font-weight:bold;color:#ffb000}
+.features{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
+.feature{background:white;padding:20px;border-radius:12px;text-align:center}
+.feature div{font-size:30px;margin-bottom:8px}
+
+.footer{background:#111;color:#ddd;margin-top:40px;padding:40px 18px}
+.footergrid{max-width:1250px;margin:auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:30px}
+.footer h3{color:white;margin-bottom:12px}
+.footer p{margin:7px 0;font-size:14px}
+
+.bottom{display:none}
+.modal{display:none;position:fixed;inset:0;background:#0008;z-index:100;align-items:center;justify-content:center;padding:15px}
+.modal.show{display:flex}
+.box{background:white;border-radius:15px;max-width:650px;width:100%;max-height:90vh;overflow:auto;padding:22px}
+.close{float:right;background:#eee;border-radius:50%;width:32px;height:32px}
+.form{display:grid;gap:12px;margin-top:15px}
+.form input,.form select,.form textarea{width:100%;padding:12px;border:1px solid #ddd;border-radius:7px;outline:0}
+.primary{background:#ff6b00;color:white;padding:12px 18px;border-radius:7px;font-weight:bold}
+.secondary{background:#eee;padding:12px 18px;border-radius:7px}
+
+.cartitem{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid #eee}
+.cartitem img{width:75px;height:75px;object-fit:cover;border-radius:8px}
+.qty button{width:28px;height:28px;background:#eee;border-radius:5px}
+
+.admin{background:#f2f4f7;min-height:100vh}
+.adminhead{background:#111;color:#fff;padding:15px 20px;display:flex;justify-content:space-between;align-items:center}
+.adminnav{display:flex;gap:8px;overflow:auto;background:#fff;padding:10px}
+.adminnav button{padding:10px 14px;background:#eee;border-radius:7px;white-space:nowrap}
+.adminnav button.active{background:#ff6b00;color:white}
+.dashboard{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;padding:18px}
+.stat{background:#fff;border-radius:12px;padding:18px}
+.stat small{color:#777}.stat strong{display:block;font-size:28px;margin-top:8px}
+.admincontent{padding:0 18px 30px}
+.tablewrap{background:white;border-radius:12px;overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:700px}
+th,td{padding:12px;border-bottom:1px solid #eee;text-align:left;font-size:13px}
+th{background:#f6f6f6}
+.status{padding:5px 8px;border-radius:20px;background:#eee;font-size:11px}
+.hidden{display:none!important}
+
+@media(max-width:800px){
+.nav{flex-wrap:wrap}.logo{font-size:22px}.search{order:3;flex-basis:100%}
+.hero{height:250px;padding:25px}.hero h1{font-size:30px}
+.categories{grid-template-columns:repeat(4,1fr)}
+.products{grid-template-columns:repeat(2,1fr);gap:10px}
+.pic{height:170px}.features{grid-template-columns:repeat(2,1fr)}
+.footergrid{grid-template-columns:1fr 1fr}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;z-index:60;display:flex;justify-content:space-around;padding:9px;box-shadow:0 -2px 10px #0002}
+.bottom button{background:white;font-size:11px}.bottom i{display:block;font-size:20px}
+}
+
+@media(max-width:450px){
+.container{padding:10px}.hero{height:230px}.hero h1{font-size:26px}
+.pic{height:155px}.price{font-size:17px}
+.footergrid{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+
+<div class="top">🇮🇳 पूरे भारत में Shopping | सुरक्षित और आसान खरीदारी</div>
+
+<header class="header">
+<div class="nav">
+<div class="logo">PK <span>MART</span></div>
+
+<div class="search">
+<input id="search" placeholder="Search products, categories..." oninput="searchProducts()">
+<button onclick="searchProducts()">🔍</button>
+</div>
+
+<button class="navbtn" onclick="openLogin()">👤 Account</button>
+<button class="navbtn" onclick="openWishlist()">♡ <span id="wishCount" class="badge">0</span></button>
+<button class="navbtn" onclick="openCart()">🛒 <span id="cartCount" class="badge">0</span></button>
+</div>
+</header>
+
+<main id="store">
+<div class="container">
+
+<section class="hero">
+<div>
+<h1>PK MART</h1>
+<p>आपकी पसंद, आपके घर तक।</p>
+<button onclick="scrollProducts()">अब Shopping करें →</button>
+</div>
+<div class="dots">
+<span class="dot active"></span><span class="dot"></span><span class="dot"></span>
+</div>
+</section>
+
+<section class="section">
+<div class="title"><h2>Shop by Category</h2></div>
+<div class="categories" id="categories"></div>
+</section>
+
+<section class="section deal">
+<div class="title">
+<h2>🔥 Deals of the Day</h2>
+<div>Offer ends in <span id="timer" class="timer">08:00:00</span></div>
+</div>
+</section>
+
+<section class="section" id="productSection">
+<div class="title">
+<h2 id="productTitle">Popular Products</h2>
+<select onchange="sortProducts(this.value)" style="padding:8px;border-radius:7px;border:1px solid #ddd">
+<option value="default">Sort</option>
+<option value="low">Price: Low to High</option>
+<option value="high">Price: High to Low</option>
+<option value="rating">Rating</option>
+</select>
+</div>
+<div class="products" id="products"></div>
+</section>
+
+<section class="section">
+<div class="features">
+<div class="feature">🚚<b> Fast Delivery</b><p>पूरे भारत में</p></div>
+<div class="feature">🔒<b> Secure Shopping</b><p>सुरक्षित checkout</p></div>
+<div class="feature">↩️<b> Easy Returns</b><p>5 Days Return</p></div>
+<div class="feature">💬<b> Support</b><p>हम आपकी मदद करेंगे</p></div>
+</div>
+</section>
+
+</div>
+</main>
+
+<footer class="footer">
+<div class="footergrid">
+<div><h3>PK MART</h3><p>भारत का आसान और भरोसेमंद online shopping platform.</p></div>
+<div><h3>Customer</h3><p onclick="openLogin()">My Account</p><p onclick="openCart()">Cart</p><p onclick="openOrders()">My Orders</p></div>
+<div><h3>Help</h3><p>FAQ</p><p>Return & Refund</p><p>Contact Support</p></div>
+<div><h3>Policies</h3><p>Privacy Policy</p><p>Terms & Conditions</p><p>Shipping Policy</p></div>
+</div>
+</footer>
+
+<div class="bottom">
+<button onclick="window.scrollTo(0,0)">🏠<br>Home</button>
+<button onclick="scrollProducts()">🛍️<br>Products</button>
+<button onclick="openWishlist()">♡<br>Wishlist</button>
+<button onclick="openCart()">🛒<br>Cart</button>
+<button onclick="openLogin()">👤<br>Account</button>
+</div>
+
+<!-- PRODUCT MODAL -->
+<div class="modal" id="productModal">
+<div class="box">
+<button class="close" onclick="closeModal('productModal')">×</button>
+<div id="productDetails"></div>
+</div>
+</div>
+
+<!-- CART -->
+<div class="modal" id="cartModal">
+<div class="box">
+<button class="close" onclick="closeModal('cartModal')">×</button>
+<h2>🛒 My Cart</h2>
+<div id="cartItems"></div>
+<div id="cartTotal" style="margin-top:15px"></div>
+<button class="primary" style="width:100%;margin-top:12px" onclick="checkout()">Proceed to Checkout</button>
+</div>
+</div>
+
+<!-- LOGIN -->
+<div class="modal" id="loginModal">
+<div class="box">
+<button class="close" onclick="closeModal('loginModal')">×</button>
+<h2>👤 PK MART Account</h2>
+<div class="form">
+<input id="loginEmail" placeholder="Mobile / Email">
+<input id="loginPassword" type="password" placeholder="Password">
+<button class="primary" onclick="customerLogin()">Login</button>
+<button class="secondary" onclick="customerSignup()">Create New Account</button>
+<hr>
+<button class="secondary" onclick="openAdminLogin()">Admin / Owner Login</button>
+</div>
+</div>
+</div>
+
+<!-- CHECKOUT -->
+<div class="modal" id="checkoutModal">
+<div class="box">
+<button class="close" onclick="closeModal('checkoutModal')">×</button>
+<h2>📦 Checkout</h2>
+<div class="form">
+<input id="cname" placeholder="Full Name">
+<input id="cmobile" placeholder="Mobile Number">
+<input id="cemail" placeholder="Email">
+<textarea id="caddress" placeholder="Full Address"></textarea>
+<input id="ccity" placeholder="City">
+<input id="cstate" placeholder="State">
+<input id="cpin" placeholder="PIN Code">
+<select id="payment">
+<option>UPI / QR</option>
+<option>COD</option>
+</select>
+<button class="primary" onclick="placeOrder()">Place Order</button>
+</div>
+</div>
+</div>
+
+<!-- ORDERS -->
+<div class="modal" id="ordersModal">
+<div class="box">
+<button class="close" onclick="closeModal('ordersModal')">×</button>
+<h2>📦 My Orders</h2>
+<div id="customerOrders"></div>
+</div>
+</div>
+
+<!-- WISHLIST -->
+<div class="modal" id="wishlistModal">
+<div class="box">
+<button class="close" onclick="closeModal('wishlistModal')">×</button>
+<h2>♡ Wishlist</h2>
+<div id="wishlistItems"></div>
+</div>
+</div>
+
+<!-- ADMIN LOGIN -->
+<div class="modal" id="adminLoginModal">
+<div class="box">
+<button class="close" onclick="closeModal('adminLoginModal')">×</button>
+<h2>🔐 Secure Login</h2>
+<div class="form">
+<select id="role">
+<option value="admin">Admin</option>
+<option value="owner">Owner</option>
+</select>
+<input id="adminId" placeholder="Login ID">
+<input id="adminPassword" type="password" placeholder="Password">
+<button class="primary" onclick="adminLogin()">Login</button>
+</div>
+<p style="margin-top:15px;color:#777;font-size:12px">
+Real authentication backend से connect होने के बाद सक्रिय किया जाएगा।
+</p>
+</div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="modal" id="adminModal">
+<div class="box" style="max-width:1000px;padding:0">
+<div class="admin">
+<div class="adminhead">
+<b>PK MART ADMIN</b>
+<button onclick="closeModal('adminModal')" style="background:#fff;padding:7px;border-radius:5px">Exit</button>
+</div>
+
+<div class="adminnav">
+<button class="active" onclick="adminPage('dashboard',this)">📊 Dashboard</button>
+<button onclick="adminPage('orders',this)">📦 Orders</button>
+<button onclick="adminPage('customers',this)">👥 Customers</button>
+<button onclick="adminPage('products',this)">🛍️ Products</button>
+<button onclick="adminPage('returns',this)">↩️ Returns</button>
+<button id="ownerTab" onclick="adminPage('admins',this)">👑 Admin Team</button>
+</div>
+
+<div id="adminDashboard" class="admincontent">
+<div class="dashboard">
+<div class="stat"><small>Total Orders</small><strong id="aOrders">0</strong></div>
+<div class="stat"><small>Customers</small><strong id="aCustomers">0</strong></div>
+<div class="stat"><small>Products</small><strong id="aProducts">0</strong></div>
+<div class="stat"><small>Sales</small><strong id="aSales">₹0</strong></div>
+</div>
+</div>
+
+<div id="adminOrders" class="admincontent hidden"></div>
+<div id="adminCustomers" class="admincontent hidden"></div>
+<div id="adminProducts" class="admincontent hidden"></div>
+<div id="adminReturns" class="admincontent hidden"></div>
+<div id="adminAdmins" class="admincontent hidden"></div>
+
+</div>
+</div>
+</div>
+
+<script>
+/* =========================
+   PK MART FRONTEND
+   ========================= */
+
+const products=[
+{id:1,name:"Premium Wireless Earbuds",cat:"Electronics",price:699,mrp:1499,rating:4.4,stock:25,img:"https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?w=600",badge:"BEST SELLER"},
+{id:2,name:"Smart Watch Series 8",cat:"Electronics",price:899,mrp:1999,rating:4.2,stock:18,img:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600",badge:"HOT DEAL"},
+{id:3,name:"Men's Casual T-Shirt",cat:"Fashion",price:399,mrp:799,rating:4.3,stock:40,img:"https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=600",badge:"NEW"},
+{id:4,name:"Women's Handbag",cat:"Fashion",price:549,mrp:1199,rating:4.5,stock:15,img:"https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600",badge:"SALE"},
+{id:5,name:"Kitchen Storage Set",cat:"Home",price:499,mrp:999,rating:4.1,stock:30,img:"https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=600",badge:"DEAL"},
+{id:6,name:"LED Table Lamp",cat:"Home",price:349,mrp:699,rating:4.3,stock:22,img:"https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=600",badge:"POPULAR"},
+{id:7,name:"Sports Running Shoes",cat:"Sports",price:799,mrp:1699,rating:4.4,stock:12,img:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600",badge:"LIMITED"},
+{id:8,name:"Backpack Travel Bag",cat:"Bags",price:599,mrp:1299,rating:4.2,stock:27,img:"https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600",badge:"SALE"},
+{id:9,name:"Bluetooth Speaker",cat:"Electronics",price:749,mrp:1499,rating:4.5,stock:16,img:"https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=600",badge:"BEST SELLER"},
+{id:10,name:"Makeup Organizer",cat:"Beauty",price:299,mrp:599,rating:4.1,stock:35,img:"https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600",badge:"NEW"}
+];
+
+const categories=[
+["📱","Electronics"],["👕","Fashion"],["🏠","Home"],["💄","Beauty"],
+["👟","Sports"],["🎒","Bags"],["🧸","Toys"],["🍳","Kitchen"]
+];
+
+let cart=JSON.parse(localStorage.getItem("pk_cart")||"[]");
+let wishlist=JSON.parse(localStorage.getItem("pk_wishlist")||"[]");
+let orders=JSON.parse(localStorage.getItem("pk_orders")||"[]");
+let customers=JSON.parse(localStorage.getItem("pk_customers")||"[]");
+let currentUser=null;
+let filtered=[...products];
+
+function money(n){return "₹"+Number(n).toLocaleString("en-IN")}
+
+function save(){
+localStorage.setItem("pk_cart",JSON.stringify(cart));
+localStorage.setItem("pk_wishlist",JSON.stringify(wishlist));
+localStorage.setItem("pk_orders",JSON.stringify(orders));
+localStorage.setItem("pk_customers",JSON.stringify(customers));
+updateCounts();
+}
+
+function updateCounts(){
+document.getElementById("cartCount").textContent=cart.reduce((a,b)=>a+b.qty,0);
+document.getElementById("wishCount").textContent=wishlist.length;
+}
+
+function renderCategories(){
+document.getElementById("categories").innerHTML=categories.map(c=>
+`<div class="cat" onclick="filterCategory('${c[1]}')">
+<div class="icon">${c[0]}</div><b>${c[1]}</b>
+</div>`).join("");
+}
+
+function renderProducts(list=filtered){
+document.getElementById("products").innerHTML=list.map(p=>{
+let dis=Math.round((1-p.price/p.mrp)*100);
+return `<div class="card">
+<div class="pic">
+<img src="${p.img}" loading="lazy">
+<span class="discount">${p.badge}</span>
+<button class="heart" onclick="toggleWish(${p.id})">${wishlist.includes(p.id)?"♥":"♡"}</button>
+</div>
+<div class="info" onclick="openProduct(${p.id})">
+<div class="name">${p.name}</div>
+<div class="rating">★ ${p.rating} · ${p.stock} left</div>
+<div><span class="price">${money(p.price)}</span><span class="mrp">${money(p.mrp)}</span></div>
+<div class="stock">${dis}% OFF</div>
+<button class="add" onclick="event.stopPropagation();addCart(${p.id})">Add to Cart</button>
+</div>
+</div>`}).join("");
+}
+
+function filterCategory(cat){
+filtered=products.filter(p=>p.cat===cat);
+document.getElementById("productTitle").textContent=cat+" Products";
+renderProducts();
+scrollProducts();
+}
+
+function searchProducts(){
+let q=document.getElementById("search").value.toLowerCase().trim();
+filtered=!q?[...products]:products.filter(p=>
+p.name.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q));
+document.getElementById("productTitle").textContent=q?`Search: ${q}`:"Popular Products";
+renderProducts();
+}
+
+function sortProducts(type){
+if(type==="low")filtered.sort((a,b)=>a.price-b.price);
+if(type==="high")filtered.sort((a,b)=>b.price-a.price);
+if(type==="rating")filtered.sort((a,b)=>b.rating-a.rating);
+renderProducts();
+}
+
+function addCart(id){
+let item=cart.find(x=>x.id===id);
+if(item)item.qty++;
+else cart.push({id,qty:1});
+save();
+alert("Product cart में add हो गया ✓");
+}
+
+function changeQty(id,n){
+let x=cart.find(a=>a.id===id);
+if(!x)return;
+x.qty+=n;
+if(x.qty<=0)cart=cart.filter(a=>a.id!==id);
+save();renderCart();
+}
+
+function openCart(){renderCart();openModal("cartModal")}
+
+function renderCart(){
+let box=document.getElementById("cartItems");
+if(!cart.length){box.innerHTML="<p style='padding:20px 0'>आपका cart खाली है।</p>";document.getElementById("cartTotal").innerHTML="";return}
+let total=0;
+box.innerHTML=cart.map(x=>{
+let p=products.find(a=>a.id===x.id);
+let t=p.price*x.qty;total+=t;
+return `<div class="cartitem">
+<img src="${p.img}">
+<div style="flex:1"><b>${p.name}</b><p>${money(p.price)}</p>
+<div class="qty"><button onclick="changeQty(${p.id},-1)">−</button> ${x.qty} <button onclick="changeQty(${p.id},1)">+</button></div>
+</div></div>`}).join("");
+document.getElementById("cartTotal").innerHTML=`<h3>Total: ${money(total)}</h3>`;
+}
+
+function toggleWish(id){
+if(wishlist.includes(id))wishlist=wishlist.filter(x=>x!==id);
+else wishlist.push(id);
+save();renderProducts(filtered);
+}
+
+function openWishlist(){
+let box=document.getElementById("wishlistItems");
+let list=wishlist.map(id=>products.find(p=>p.id===id)).filter(Boolean);
+box.innerHTML=list.length?list.map(p=>`
+<div class="cartitem"><img src="${p.img}"><div><b>${p.name}</b><p>${money(p.price)}</p>
+<button class="primary" onclick="addCart(${p.id})">Add to Cart</button></div></div>`).join(""):"<p style='padding:20px 0'>Wishlist खाली है।</p>";
+openModal("wishlistModal");
+}
+
+function openProduct(id){
+let p=products.find(x=>x.id===id);
+let dis=Math.round((1-p.price/p.mrp)*100);
+document.getElementById("productDetails").innerHTML=`
+<img src="${p.img}" style="width:100%;max-height:350px;object-fit:contain;border-radius:10px">
+<h2 style="margin-top:15px">${p.name}</h2>
+<div class="rating">★ ${p.rating}</div>
+<h1>${money(p.price)} <span class="mrp">${money(p.mrp)}</span></h1>
+<p style="color:#078b3d;margin:10px 0">${dis}% OFF · ${p.stock} items available</p>
+<p>Fast delivery available. Easy return policy.</p>
+<button class="primary" style="margin-top:15px;width:100%" onclick="addCart(${p.id});closeModal('productModal')">Add to Cart</button>
+<button class="secondary" style="margin-top:8px;width:100%" onclick="addCart(${p.id});closeModal('productModal');checkout()">Buy Now</button>`;
+openModal("productModal");
+}
+
+function checkout(){
+if(!cart.length){alert("Cart खाली है");return}
+closeModal("cartModal");
+openModal("checkoutModal");
+}
+
+function customerSignup(){
+let name=prompt("आपका नाम:");
+if(!name)return;
+let mobile=prompt("Mobile number:");
+if(!mobile)return;
+if(customers.some(c=>c.mobile===mobile)){alert("Account पहले से मौजूद है");return}
+let c={id:"CUS"+Date.now(),name,mobile,email:"",address:"",created:new Date().toISOString()};
+customers.push(c);currentUser=c;save();
+alert("Account बन गया ✓");
+closeModal("loginModal");
+}
+
+function customerLogin(){
+let value=document.getElementById("loginEmail").value.trim();
+let c=customers.find(x=>x.mobile===value||x.email===value);
+if(!c){alert("Account नहीं मिला। पहले account बनाइए.");return}
+currentUser=c;
+alert("Login successful ✓");
+closeModal("loginModal");
+}
+
+function placeOrder(){
+let name=document.getElementById("cname").value.trim();
+let mobile=document.getElementById("cmobile").value.trim();
+let address=document.getElementById("caddress").value.trim();
+let city=document.getElementById("ccity").value.trim();
+let state=document.getElementById("cstate").value.trim();
+let pin=document.getElementById("cpin").value.trim();
+
+if(!name||!mobile||!address||!city||!state||!pin){
+alert("कृपया सभी जरूरी details भरें");return
+}
+
+let total=cart.reduce((s,x)=>{
+let p=products.find(a=>a.id===x.id);return s+p.price*x.qty
+},0);
+
+let order={
+id:"PKM"+Date.now(),
+date:new Date().toLocaleString("en-IN"),
+customerId:currentUser?currentUser.id:null,
+customer:{name,mobile,email:document.getElementById("cemail").value,address,city,state,pin},
+items:cart.map(x=>({productId:x.id,name:products.find(p=>p.id===x.id).name,qty:x.qty,price:products.find(p=>p.id===x.id).price})),
+total,
+payment:document.getElementById("payment").value,
+paymentStatus:"Pending",
+status:"Pending",
+returnStatus:"Not Requested",
+refundStatus:"Not Applicable"
+};
+
+orders.unshift(order);
+cart=[];
+save();
+closeModal("checkoutModal");
+alert("Order placed successfully! Order ID: "+order.id);
+}
+
+function openOrders(){
+if(!currentUser){
+alert("पहले Customer Login करें");
+openLogin();return
+}
+let mine=orders.filter(o=>o.customerId===currentUser.id||o.customer.mobile===currentUser.mobile);
+document.getElementById("customerOrders").innerHTML=mine.length?mine.map(o=>`
+<div style="border:1px solid #ddd;border-radius:10px;padding:13px;margin:10px 0">
+<b>${o.id}</b><br>
+<small>${o.date}</small>
+<hr style="margin:8px 0">
+${o.items.map(i=>`${i.name} × ${i.qty}`).join("<br>")}
+<p style="margin-top:8px"><b>${money(o.total)}</b></p>
+<span class="status">${o.status}</span>
+</div>`).join(""):"<p style='padding:20px 0'>अभी कोई order नहीं है।</p>";
+openModal("ordersModal");
+}
+
+function openLogin(){openModal("loginModal")}
+
+function openAdminLogin(){
+closeModal("loginModal");
+openModal("adminLoginModal");
+}
+
+function adminLogin(){
+/*
+ Real Admin/Owner authentication backend में होगा.
+ अभी demo panel खोलने के लिए:
+ ID: demo
+ Password: demo
+*/
+let id=document.getElementById("adminId").value;
+let pass=document.getElementById("adminPassword").value;
+if(id==="demo"&&pass==="demo"){
+closeModal("adminLoginModal");
+openAdminPanel(document.getElementById("role").value);
+}else alert("Demo frontend login के लिए ID demo और password demo इस्तेमाल करें। Real credentials backend में लगाए जाएंगे।");
+}
+
+function openAdminPanel(role="admin"){
+document.getElementById("adminModal").classList.add("show");
+document.getElementById("ownerTab").style.display=role==="owner"?"block":"none";
+renderAdmin();
+}
+
+function adminPage(page,btn){
+document.querySelectorAll(".admincontent").forEach(x=>x.classList.add("hidden"));
+document.querySelectorAll(".adminnav button").forEach(x=>x.classList.remove("active"));
+btn.classList.add("active");
+document.getElementById("admin"+page.charAt(0).toUpperCase()+page.slice(1)).classList.remove("hidden");
+if(page==="orders")renderAdminOrders();
+if(page==="customers")renderAdminCustomers();
+if(page==="products")renderAdminProducts();
+if(page==="returns")renderAdminReturns();
+if(page==="admins")renderAdminTeam();
+}
+
+function renderAdmin(){
+document.getElementById("aOrders").textContent=orders.length;
+document.getElementById("aCustomers").textContent=customers.length;
+document.getElementById("aProducts").textContent=products.length;
+document.getElementById("aSales").textContent=money(orders.reduce((s,o)=>s+o.total,0));
+}
+
+function renderAdminOrders(){
+document.getElementById("adminOrders").innerHTML=`
+<h2 style="margin-bottom:12px">📦 All Orders</h2>
+<div class="tablewrap"><table>
+<tr><th>Order</th><th>Customer</th><th>Amount</th><th>Payment</th><th>Status</th><th>Action</th></tr>
+${orders.map(o=>`<tr>
+<td><b>${o.id}</b><br><small>${o.date}</small></td>
+<td>${o.customer.name}<br>${o.customer.mobile}<br>${o.customer.address}, ${o.customer.city}, ${o.customer.state} - ${o.customer.pin}</td>
+<td>${money(o.total)}</td>
+<td>${o.payment}<br>${o.paymentStatus}</td>
+<td><span class="status">${o.status}</span><br><small>${o.returnStatus}</small></td>
+<td><select onchange="changeOrderStatus('${o.id}',this.value)">
+${["Pending","Confirmed","Processing","Shipped","Delivered","Cancelled","Return Requested","Return Approved","Return Pickup Scheduled","Return Picked Up","Return Received","Refund Processing","Refunded","Return Rejected"].map(s=>`<option ${o.status===s?"selected":""}>${s}</option>`).join("")}
+</select></td>
+</tr>`).join("")}
+</table></div>`;
+}
+
+function changeOrderStatus(id,status){
+let o=orders.find(x=>x.id===id);
+if(o){o.status=status;if(status==="Return Requested")o.returnStatus="Requested";if(status==="Return Approved")o.returnStatus="Approved";if(status==="Return Pickup Scheduled")o.returnStatus="Pickup Scheduled";if(status==="Return Picked Up")o.returnStatus="Picked Up";if(status==="Return Received")o.returnStatus="Received";if(status==="Refund Processing")o.refundStatus="Processing";if(status==="Refunded")o.refundStatus="Refunded";save();renderAdmin();alert("Order status updated ✓")}
+}
+
+function renderAdminCustomers(){
+document.getElementById("adminCustomers").innerHTML=`
+<h2 style="margin-bottom:12px">👥 Customers</h2>
+<div class="tablewrap"><table>
+<tr><th>ID</th><th>Name</th><th>Mobile</th><th>Email</th><th>Orders</th></tr>
+${customers.map(c=>`<tr><td>${c.id}</td><td>${c.name}</td><td>${c.mobile}</td><td>${c.email||"-"}</td><td>${orders.filter(o=>o.customerId===c.id).length}</td></tr>`).join("")}
+</table></div>`;
+}
+
+function renderAdminProducts(){
+document.getElementById("adminProducts").innerHTML=`
+<h2 style="margin-bottom:12px">🛍️ Products</h2>
+<div class="tablewrap"><table>
+<tr><th>Product</th><th>Category</th><th>Price</th><th>MRP</th><th>Stock</th></tr>
+${products.map(p=>`<tr><td>${p.name}</td><td>${p.cat}</td><td>${money(p.price)}</td><td>${money(p.mrp)}</td><td>${p.stock}</td></tr>`).join("")}
+</table></div>`;
+}
+
+function renderAdminReturns(){
+let r=orders.filter(o=>o.status.toLowerCase().includes("return")||o.returnStatus!=="Not Requested");
+document.getElementById("adminReturns").innerHTML=`
+<h2 style="margin-bottom:12px">↩️ Returns & Refunds</h2>
+<div class="tablewrap"><table>
+<tr><th>Order</th><th>Customer</th><th>Return</th><th>Refund</th><th>Status</th></tr>
+${r.map(o=>`<tr><td>${o.id}</td><td>${o.customer.name}<br>${o.customer.mobile}</td><td>${o.returnStatus}</td><td>${o.refundStatus}</td><td>${o.status}</td></tr>`).join("")||"<tr><td colspan='5'>No returns</td></tr>"}
+</table></div>`;
+}
+
+function renderAdminTeam(){
+document.getElementById("adminAdmins").innerHTML=`
+<h2>👑 Admin Team</h2>
+<p style="margin-top:10px">Owner Panel से Admin accounts create/manage किए जाएंगे।</p>
+<div style="background:white;padding:15px;border-radius:10px;margin-top:12px">
+<b>Owner</b><br>Only one Owner account is allowed.
+</div>
+<button class="primary" style="margin-top:12px" onclick="alert('Real Admin creation backend setup के बाद activate होगा.')">+ Add Admin</button>`;
+}
+
+function openModal(id){document.getElementById(id).classList.add("show")}
+function closeModal(id){document.getElementById(id).classList.remove("show")}
+
+function scrollProducts(){
+document.getElementById("productSection").scrollIntoView({behavior:"smooth"})
+}
+
+let seconds=8*60*60;
+setInterval(()=>{
+seconds--;
+if(seconds<0)seconds=8*60*60;
+let h=Math.floor(seconds/3600);
+let m=Math.floor(seconds%3600/60);
+let s=seconds%60;
+document.getElementById("timer").textContent=
+String(h).padStart(2,"0")+":"+String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+},1000);
+
+renderCategories();
+renderProducts();
+updateCounts();
+</script>
+
+</body>
+  </html>
