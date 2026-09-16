@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PK MART — Online Shopping</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,Helvetica,sans-serif;background:#f5f6f8;color:#202124}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0}
+a{text-decoration:none;color:inherit}
+
+.header{
+  position:sticky;top:0;z-index:1000;
+  background:#fff;border-bottom:1px solid #ddd;
+}
+.top{
+  display:flex;align-items:center;gap:14px;
+  padding:12px max(15px,4vw);
+}
+.logo{font-size:25px;font-weight:900;white-space:nowrap}
+.logo span{color:#ff7a00}
+.search{flex:1;display:flex}
+.search input{
+  width:100%;padding:13px 15px;border:1px solid #ccc;
+  border-radius:8px 0 0 8px;outline:none
+}
+.search button{
+  padding:0 20px;background:#ff7a00;color:white;
+  border-radius:0 8px 8px 0
+}
+.headbtn{background:#fff;padding:10px}
+.cartBadge{font-weight:bold}
+
+.nav{
+  display:flex;gap:18px;padding:9px max(15px,4vw);
+  overflow:auto;border-top:1px solid #eee;font-size:14px
+}
+
+.hero{
+  margin:15px auto;max-width:1250px;padding:45px 25px;
+  border-radius:18px;background:linear-gradient(120deg,#111,#333);
+  color:#fff;display:flex;justify-content:space-between;align-items:center;
+  gap:20px
+}
+.hero h1{font-size:clamp(30px,5vw,55px);margin-bottom:10px}
+.hero p{font-size:17px;color:#ddd;margin-bottom:20px}
+.primary{
+  background:#ff7a00;color:#fff;padding:12px 20px;
+  border-radius:8px;font-weight:bold
+}
+
+.container{max-width:1250px;margin:auto;padding:10px 15px 100px}
+.sectionTitle{display:flex;justify-content:space-between;align-items:center;margin:25px 0 15px}
+.sectionTitle h2{font-size:22px}
+
+.categories{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));
+  gap:10px
+}
+.category{
+  background:#fff;padding:18px 8px;text-align:center;
+  border-radius:12px;box-shadow:0 2px 8px #00000010
+}
+.category .icon{font-size:30px;margin-bottom:7px}
+
+.grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));
+  gap:15px
+}
+.card{
+  background:#fff;border-radius:12px;overflow:hidden;
+  box-shadow:0 2px 10px #00000012;position:relative
+}
+.pic{
+  height:200px;background:#eee;display:flex;align-items:center;
+  justify-content:center;overflow:hidden
+}
+.pic img{width:100%;height:100%;object-fit:cover}
+.noimg{font-size:55px}
+.cardbody{padding:12px}
+.card h3{font-size:15px;line-height:1.35;height:42px;overflow:hidden}
+.price{font-size:20px;font-weight:bold;margin:8px 0}
+.mrp{text-decoration:line-through;color:#888;font-size:13px;margin-left:5px}
+.off{color:#078b42;font-size:13px}
+.rating{font-size:13px;margin:6px 0}
+.actions{display:flex;gap:7px;margin-top:10px}
+.actions button{flex:1;padding:10px;border-radius:7px}
+.add{background:#ff9f00;color:#111}
+.buy{background:#ff6b00;color:#fff}
+
+.modal{
+  display:none;position:fixed;inset:0;background:#0008;
+  z-index:2000;align-items:center;justify-content:center;padding:15px
+}
+.modal.show{display:flex}
+.box{
+  background:#fff;width:min(600px,100%);max-height:90vh;
+  overflow:auto;border-radius:15px;padding:20px;position:relative
+}
+.close{
+  position:absolute;right:15px;top:10px;font-size:25px;
+  background:none
+}
+.form{display:grid;gap:12px;margin-top:15px}
+.form input,.form textarea,.form select{
+  width:100%;padding:12px;border:1px solid #ccc;border-radius:7px
+}
+.form button{padding:12px;border-radius:7px}
+.secondary{background:#eee}
+.message{padding:10px;border-radius:7px;background:#f2f2f2;margin-top:10px}
+.hidden{display:none!important}
+
+.cartItem{
+  display:flex;justify-content:space-between;gap:10px;
+  padding:12px 0;border-bottom:1px solid #eee
+}
+.qty button{padding:4px 9px;background:#eee}
+.total{
+  margin-top:15px;padding:15px;background:#f5f5f5;
+  font-size:20px;font-weight:bold
+}
+
+.bottom{
+  position:fixed;bottom:0;left:0;right:0;background:#fff;
+  border-top:1px solid #ddd;display:flex;justify-content:space-around;
+  padding:8px;z-index:1500
+}
+.bottom button{background:none;font-size:12px}
+.bottom b{display:block;font-size:20px}
+
+.toast{
+  position:fixed;bottom:70px;left:50%;transform:translateX(-50%);
+  background:#222;color:#fff;padding:12px 18px;border-radius:8px;
+  display:none;z-index:3000
+}
+.toast.show{display:block}
+
+@media(min-width:800px){
+ .bottom{display:none}
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+  <div class="top">
+    <div class="logo">PK <span>MART</span></div>
+
+    <div class="search">
+      <input id="search" placeholder="Search products, categories...">
+      <button onclick="searchProducts()">🔍</button>
+    </div>
+
+    <button class="headbtn" onclick="openAccount()">👤 Account</button>
+    <button class="headbtn" onclick="openCart()">🛒 <span id="cartCount">0</span></button>
+  </div>
+
+  <nav class="nav">
+    <button onclick="filterCategory('All')">All</button>
+    <button onclick="filterCategory('Fashion')">Fashion</button>
+    <button onclick="filterCategory('Electronics')">Electronics</button>
+    <button onclick="filterCategory('Home')">Home</button>
+    <button onclick="filterCategory('Beauty')">Beauty</button>
+    <button onclick="filterCategory('Accessories')">Accessories</button>
+    <button onclick="openOrders()">My Orders</button>
+  </nav>
+</header>
+
+<section class="hero">
+  <div>
+    <h1>Welcome to PK MART</h1>
+    <p>Shop smart. Shop easy. Delivered across India.</p>
+    <button class="primary" onclick="document.getElementById('products').scrollIntoView()">Shop Now</button>
+  </div>
+  <div style="font-size:90px">🛍️</div>
+</section>
+
+<main class="container">
+
+  <section>
+    <div class="sectionTitle">
+      <h2>Shop by Category</h2>
+    </div>
+
+    <div class="categories">
+      <button class="category" onclick="filterCategory('Fashion')">
+        <div class="icon">👕</div>Fashion
+      </button>
+      <button class="category" onclick="filterCategory('Electronics')">
+        <div class="icon">📱</div>Electronics
+      </button>
+      <button class="category" onclick="filterCategory('Home')">
+        <div class="icon">🏠</div>Home
+      </button>
+      <button class="category" onclick="filterCategory('Beauty')">
+        <div class="icon">💄</div>Beauty
+      </button>
+      <button class="category" onclick="filterCategory('Accessories')">
+        <div class="icon">👜</div>Accessories
+      </button>
+    </div>
+  </section>
+
+  <section id="products">
+    <div class="sectionTitle">
+      <h2 id="productTitle">Products</h2>
+      <select onchange="sortProducts(this.value)">
+        <option value="default">Sort</option>
+        <option value="low">Price: Low to High</option>
+        <option value="high">Price: High to Low</option>
+        <option value="rating">Rating</option>
+      </select>
+    </div>
+
+    <div id="productGrid" class="grid"></div>
+  </section>
+
+</main>
+
+<div id="toast" class="toast"></div>
+
+<!-- ACCOUNT -->
+<div id="accountModal" class="modal">
+<div class="box">
+<button class="close" onclick="closeModal('accountModal')">×</button>
+
+<h2>PK MART Account</h2>
+
+<div id="loggedUser" class="hidden"></div>
+
+<div id="authArea">
+
+<h3 style="margin-top:20px">Login</h3>
+<div class="form">
+<input id="loginMobile" placeholder="Mobile Number">
+<input id="loginPassword" type="password" placeholder="Password">
+<button class="primary" onclick="loginCustomer()">Login</button>
+</div>
+
+<hr style="margin:20px 0">
+
+<h3>Create Account</h3>
+<div class="form">
+<input id="signupName" placeholder="Full Name">
+<input id="signupMobile" placeholder="Mobile Number">
+<input id="signupEmail" type="email" placeholder="Email">
+<input id="signupPassword" type="password" placeholder="Password">
+<button class="primary" onclick="signupCustomer()">Create Account</button>
+</div>
+
+<div class="message">
+Admin/Owner login is handled separately by the management system.
+</div>
+
+</div>
+</div>
+</div>
+
+<!-- CART -->
+<div id="cartModal" class="modal">
+<div class="box">
+<button class="close" onclick="closeModal('cartModal')">×</button>
+<h2>Your Cart</h2>
+
+<div id="cartItems"></div>
+<div id="cartTotal" class="total"></div>
+
+<button class="primary" style="width:100%;margin-top:15px"
+onclick="checkout()">Proceed to Checkout</button>
+</div>
+</div>
+
+<!-- CHECKOUT -->
+<div id="checkoutModal" class="modal">
+<div class="box">
+<button class="close" onclick="closeModal('checkoutModal')">×</button>
+<h2>Checkout</h2>
+
+<div class="form">
+<input id="customerName" placeholder="Full Name">
+<input id="customerMobile" placeholder="Mobile Number">
+
+<textarea id="customerAddress" rows="4"
+placeholder="Complete Delivery Address"></textarea>
+
+<select id="paymentMethod">
+<option value="COD">Cash on Delivery</option>
+<option value="UPI">UPI</option>
+</select>
+
+<button class="primary" onclick="placeOrder()">Place Order</button>
+</div>
+
+<div class="message">
+UPI payments may require manual verification until a payment gateway is connected.
+</div>
+</div>
+</div>
+
+<!-- PRODUCT -->
+<div id="productModal" class="modal">
+<div class="box">
+<button class="close" onclick="closeModal('productModal')">×</button>
+<div id="productDetails"></div>
+</div>
+</div>
+
+<!-- ORDERS -->
+<div id="ordersModal" class="modal">
+<div class="box">
+<button class="close" onclick="closeModal('ordersModal')">×</button>
+<h2>My Orders</h2>
+<div id="ordersList"></div>
+</div>
+</div>
+
+<!-- RETURN -->
+<div id="returnModal" class="modal">
+<div class="box">
+<button class="close" onclick="closeModal('returnModal')">×</button>
+<h2>Request Return</h2>
+
+<div class="form">
+<input id="returnOrderId" placeholder="Order ID">
+<input id="returnProductId" placeholder="Product ID (optional)">
+<textarea id="returnReason" rows="4" placeholder="Reason for return"></textarea>
+<button class="primary" onclick="submitReturn()">Request Return</button>
+</div>
+</div>
+</div>
+
+<div class="bottom">
+<button onclick="window.scrollTo({top:0,behavior:'smooth'})"><b>⌂</b>Home</button>
+<button onclick="openOrders()"><b>📦</b>Orders</button>
+<button onclick="openCart()"><b>🛒</b>Cart</button>
+<button onclick="openAccount()"><b>👤</b>Account</button>
+</div>
+
+
+<script>
+
+/* =========================================================
+   PK MART — BACKEND CONNECTION
+   ========================================================= */
+
+const API_URL =
+"https://script.google.com/macros/s/AKfycbxqUngp4jsgZw5iyEYT-LkuApH-d0-4oPpfYRteQvfP8Ka7tsgGe8jnbNBKRhRWBCz8mw/exec";
+
+
+/* =========================================================
+   LOCAL STATE
+   ========================================================= */
+
+let products = [];
+let cart = JSON.parse(localStorage.getItem("pkmart_cart") || "[]");
+let currentUser = JSON.parse(localStorage.getItem("pkmart_user") || "null");
+let currentCategory = "All";
+
+
+/* =========================================================
+   API
+   ========================================================= */
+
+async function api(action, data = {}) {
+
+  try {
+
+    const response = await fetch(API_URL,{
+      method:"POST",
+      headers:{
+        "Content-Type":"text/plain;charset=utf-8"
+      },
+      body:JSON.stringify({
+        action,
+        ...data
+      })
+    });
+
+    return await response.json();
+
+  } catch(error) {
+
+    console.error(error);
+
+    return {
+      success:false,
+      message:"Server connection failed"
+    };
+  }
+}
+
+
+/* =========================================================
+   DEMO PRODUCTS
+   ========================================================= */
+
+const demoProducts = [
+
+{
+ productId:"DEMO001",
+ name:"Premium Casual T-Shirt",
+ category:"Fashion",
+ brand:"PK MART",
+ description:"Comfortable everyday casual t-shirt.",
+ imageUrl:"",
+ price:399,
+ mrp:799,
+ discount:50,
+ rating:4.3,
+ stock:25,
+ status:"ACTIVE"
+},
+
+{
+ productId:"DEMO002",
+ name:"Wireless Bluetooth Earbuds",
+ category:"Electronics",
+ brand:"PK MART",
+ description:"Compact wireless earbuds for daily use.",
+ imageUrl:"",
+ price:699,
+ mrp:1499,
+ discount:53,
+ rating:4.2,
+ stock:18,
+ status:"ACTIVE"
+},
+
+{
+ productId:"DEMO003",
+ name:"Decorative Home Lamp",
+ category:"Home",
+ brand:"PK MART",
+ description:"Modern decorative lamp for your home.",
+ imageUrl:"",
+ price:499,
+ mrp:999,
+ discount:50,
+ rating:4.4,
+ stock:12,
+ status:"ACTIVE"
+},
+
+{
+ productId:"DEMO004",
+ name:"Daily Beauty Combo",
+ category:"Beauty",
+ brand:"PK MART",
+ description:"Useful beauty care combo.",
+ imageUrl:"",
+ price:549,
+ mrp:999,
+ discount:45,
+ rating:4.1,
+ stock:20,
+ status:"ACTIVE"
+},
+
+{
+ productId:"DEMO005",
+ name:"Fashion Handbag",
+ category:"Accessories",
+ brand:"PK MART",
+ description:"Stylish everyday handbag.",
+ imageUrl:"",
+ price:599,
+ mrp:1199,
+ discount:50,
+ rating:4.5,
+ stock:15,
+ status:"ACTIVE"
+}
+
+];
+
+
+/* =========================================================
+   LOAD PRODUCTS
+   ========================================================= */
+
+async function loadProducts(){
+
+  const result = await api("getProducts");
+
+  if(result.success && Array.isArray(result.products) && result.products.length){
+
+    products = result.products.filter(p =>
+      String(p.status || "ACTIVE").toUpperCase() !== "INACTIVE"
+    );
+
+  }else{
+
+    products = demoProducts;
+  }
+
+  renderProducts(products);
+}
+
+
+/* =========================================================
+   RENDER PRODUCTS
+   ========================================================= */
+
+function renderProducts(list){
+
+  const grid = document.getElementById("productGrid");
+
+  if(!list.length){
+
+    grid.innerHTML =
+      "<div class='message'>No products found.</div>";
+
+    return;
+  }
+
+  grid.innerHTML = list.map(p => `
+
+    <div class="card">
+
+      <div class="pic" onclick="openProduct('${escapeAttr(p.productId)}')">
+
+        ${
+          p.imageUrl
+          ? `<img src="${escapeAttr(p.imageUrl)}" alt="${escapeAttr(p.name)}">`
+          : `<div class="noimg">🛍️</div>`
+        }
+
+      </div>
+
+      <div class="cardbody">
+
+        <h3>${escapeHtml(p.name)}</h3>
+
+        <div class="rating">
+          ⭐ ${Number(p.rating || 0).toFixed(1)}
+        </div>
+
+        <div class="price">
+          ₹${Number(p.price || 0).toLocaleString("en-IN")}
+          <span class="mrp">
+            ₹${Number(p.mrp || 0).toLocaleString("en-IN")}
+          </span>
+        </div>
+
+        <div class="off">
+          ${Number(p.discount || 0)}% OFF
+        </div>
+
+        <div class="actions">
+
+          <button class="add"
+            onclick="addToCart('${escapeAttr(p.productId)}')">
+            Add
+          </button>
+
+          <button class="buy"
+            onclick="buyNow('${escapeAttr(p.productId)}')">
+            Buy Now
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  `).join("");
+}
+
+
+/* =========================================================
+   SEARCH
+   ========================================================= */
+
+function searchProducts(){
+
+  const q =
+    document.getElementById("search").value
+    .trim()
+    .toLowerCase();
+
+  currentCategory = "All";
+
+  const result = products.filter(p =>
+    String(p.name).toLowerCase().includes(q) ||
+    String(p.category).toLowerCase().includes(q) ||
+    String(p.brand).toLowerCase().includes(q)
+  );
+
+  document.getElementById("productTitle").textContent =
+    q ? `Search: ${q}` : "Products";
+
+  renderProducts(result);
+}
+
+
+document.getElementById("search")
+.addEventListener("keydown",e=>{
+  if(e.key==="Enter") searchProducts();
+});
+
+
+/* =========================================================
+   CATEGORY
+   ========================================================= */
+
+function filterCategory(category){
+
+  currentCategory = category;
+
+  if(category === "All"){
+
+    renderProducts(products);
+
+  }else{
+
+    renderProducts(
+      products.filter(p =>
+        String(p.category).toLowerCase() === category.toLowerCase()
+      )
+    );
+  }
+
+  document.getElementById("productTitle").textContent =
+    category === "All" ? "Products" : category;
+
+  document.getElementById("products")
+    .scrollIntoView({behavior:"smooth"});
+}
+
+
+/* =========================================================
+   SORT
+   ========================================================= */
+
+function sortProducts(type){
+
+  let list = [...products];
+
+  if(currentCategory !== "All"){
+    list = list.filter(p =>
+      String(p.category).toLowerCase() === currentCategory.toLowerCase()
+    );
+  }
+
+  if(type==="low"){
+    list.sort((a,b)=>Number(a.price)-Number(b.price));
+  }
+
+  if(type==="high"){
+    list.sort((a,b)=>Number(b.price)-Number(a.price));
+  }
+
+  if(type==="rating"){
+    list.sort((a,b)=>Number(b.rating)-Number(a.rating));
+  }
+
+  renderProducts(list);
+}
+
+
+/* =========================================================
+   CART
+   ========================================================= */
+
+function saveCart(){
+
+  localStorage.setItem(
+    "pkmart_cart",
+    JSON.stringify(cart)
+  );
+
+  updateCartCount();
+}
+
+
+function updateCartCount(){
+
+  const count =
+    cart.reduce((sum,item)=>sum + Number(item.qty),0);
+
+  document.getElementById("cartCount").textContent = count;
+}
+
+
+function addToCart(id){
+
+  const p =
+    products.find(x=>String(x.productId)===String(id));
+
+  if(!p) return;
+
+  if(Number(p.stock) <= 0){
+
+    showToast("Product is out of stock");
+    return;
+  }
+
+  const existing =
+    cart.find(x=>String(x.productId)===String(id));
+
+  if(existing){
+
+    if(existing.qty < Number(p.stock)){
+      existing.qty++;
+    }
+
+  }else{
+
+    cart.push({
+      productId:p.productId,
+      name:p.name,
+      price:Number(p.price),
+      imageUrl:p.imageUrl || "",
+      qty:1
+    });
+  }
+
+  saveCart();
+  showToast("Added to cart");
+}
+
+
+function buyNow(id){
+
+  cart = [];
+
+  addToCart(id);
+
+  openCheckout();
+}
+
+
+function openCart(){
+
+  renderCart();
+
+  document.getElementById("cartModal")
+    .classList.add("show");
+}
+
+
+function renderCart(){
+
+  const box =
+    document.getElementById("cartItems");
+
+  if(!cart.length){
+
+    box.innerHTML =
+      "<div class='message'>Your cart is empty.</div>";
+
+    document.getElementById("cartTotal").textContent =
+      "Total: ₹0";
+
+    return;
+  }
+
+  box.innerHTML = cart.map(item=>`
+
+    <div class="cartItem">
+
+      <div>
+        <b>${escapeHtml(item.name)}</b>
+        <div>₹${Number(item.price).toLocaleString("en-IN")}</div>
+
+        <div class="qty">
+          <button onclick="changeQty('${escapeAttr(item.productId)}',-1)">−</button>
+          ${item.qty}
+          <button onclick="changeQty('${escapeAttr(item.productId)}',1)">+</button>
+        </div>
+
+      </div>
+
+      <button onclick="removeCart('${escapeAttr(item.productId)}')">
+        🗑️
+      </button>
+
+    </div>
+
+  `).join("");
+
+  const total =
+    cart.reduce((sum,item)=>
+      sum + item.price * item.qty,0);
+
+  document.getElementById("cartTotal").textContent =
+    "Total: ₹" + total.toLocaleString("en-IN");
+}
+
+
+function changeQty(id,change){
+
+  const item =
+    cart.find(x=>String(x.productId)===String(id));
+
+  if(!item) return;
+
+  item.qty += change;
+
+  if(item.qty <= 0){
+
+    cart =
+      cart.filter(x=>String(x.productId)!==String(id));
+  }
+
+  saveCart();
+  renderCart();
+}
+
+
+function removeCart(id){
+
+  cart =
+    cart.filter(x=>String(x.productId)!==String(id));
+
+  saveCart();
+  renderCart();
+}
+
+
+/* =========================================================
+   CHECKOUT
+   ========================================================= */
+
+function checkout(){
+
+  if(!cart.length){
+
+    showToast("Cart is empty");
+    return;
+  }
+
+  closeModal("cartModal");
+  openCheckout();
+}
+
+
+function openCheckout(){
+
+  if(!currentUser){
+
+    showToast("Please login first");
+    openAccount();
+    return;
+  }
+
+  document.getElementById("customerName").value =
+    currentUser.name || "";
+
+  document.getElementById("customerMobile").value =
+    currentUser.mobile || "";
+
+  document.getElementById("checkoutModal")
+    .classList.add("show");
+}
+
+
+async function placeOrder(){
+
+  if(!currentUser){
+
+    showToast("Please login first");
+    return;
+  }
+
+  if(!cart.length){
+
+    showToast("Cart is empty");
+    return;
+  }
+
+  const name =
+    document.getElementById("customerName").value.trim();
+
+  const mobile =
+    document.getElementById("customerMobile").value.trim();
+
+  const address =
+    document.getElementById("customerAddress").value.trim();
+
+  const paymentMethod =
+    document.getElementById("paymentMethod").value;
+
+  if(!name || !mobile || !address){
+
+    showToast("Please fill all delivery details");
+    return;
+  }
+
+  const subtotal =
+    cart.reduce((sum,item)=>
+      sum + item.price * item.qty,0);
+
+  const result =
+    await api("createOrder",{
+
+      userId:currentUser.userId,
+
+      customerName:name,
+
+      mobile:mobile,
+
+      items:cart,
+
+      subtotal:subtotal,
+
+      discount:0,
+
+      deliveryFee:0,
+
+      total:subtotal,
+
+      paymentMethod:paymentMethod,
+
+      paymentStatus:
+        paymentMethod==="COD" ? "PENDING" : "PENDING",
+
+      address:{
+        address:address
+      }
+    });
+
+  if(result.success){
+
+    showToast(
+      "Order placed: " + result.orderId
+    );
+
+    cart=[];
+    saveCart();
+
+    closeModal("checkoutModal");
+
+  }else{
+
+    showToast(result.message || "Order failed");
+  }
+}
+
+
+/* =========================================================
+   SIGNUP
+   ========================================================= */
+
+async function signupCustomer(){
+
+  const name =
+    document.getElementById("signupName").value.trim();
+
+  const mobile =
+    document.getElementById("signupMobile").value.trim();
+
+  const email =
+    document.getElementById("signupEmail").value.trim();
+
+  const password =
+    document.getElementById("signupPassword").value;
+
+  if(!name || !mobile || !password){
+
+    showToast("Name, mobile and password required");
+    return;
+  }
+
+  const result =
+    await api("signup",{
+      name,
+      mobile,
+      email,
+      password
+    });
+
+  if(result.success){
+
+    currentUser=result.user;
+
+    localStorage.setItem(
+      "pkmart_user",
+      JSON.stringify(currentUser)
+    );
+
+    showToast("Account created successfully");
+
+    closeModal("accountModal");
+
+    updateAccountUI();
+
+  }else{
+
+    showToast(result.message || "Signup failed");
+  }
+}
+
+
+/* =========================================================
+   LOGIN
+   ========================================================= */
+
+async function loginCustomer(){
+
+  const mobile =
+    document.getElementById("loginMobile").value.trim();
+
+  const password =
+    document.getElementById("loginPassword").value;
+
+  if(!mobile || !password){
+
+    showToast("Mobile and password required");
+    return;
+  }
+
+  const result =
+    await api("login",{
+      mobile,
+      password
+    });
+
+  if(result.success){
+
+    currentUser=result.user;
+
+    localStorage.setItem(
+      "pkmart_user",
+      JSON.stringify(currentUser)
+    );
+
+    showToast("Login successful");
+
+    closeModal("accountModal");
+
+    updateAccountUI();
+
+  }else{
+
+    showToast(result.message || "Login failed");
+  }
+}
+
+
+/* =========================================================
+   ACCOUNT
+   ========================================================= */
+
+function openAccount(){
+
+  updateAccountUI();
+
+  document.getElementById("accountModal")
+    .classList.add("show");
+}
+
+
+function updateAccountUI(){
+
+  const auth =
+    document.getElementById("authArea");
+
+  const logged =
+    document.getElementById("loggedUser");
+
+  if(currentUser){
+
+    auth.classList.add("hidden");
+
+    logged.classList.remove("hidden");
+
+    logged.innerHTML = `
+
+      <div class="message">
+
+        <h3>Welcome, ${escapeHtml(currentUser.name)}</h3>
+
+        <p>Mobile: ${escapeHtml(currentUser.mobile)}</p>
+
+        <p>Account: Active</p>
+
+        <button
+          class="primary"
+          style="margin-top:12px"
+          onclick="logout()">
+          Logout
+        </button>
+
+      </div>
+
+    `;
+
+  }else{
+
+    auth.classList.remove("hidden");
+    logged.classList.add("hidden");
+  }
+}
+
+
+function logout(){
+
+  currentUser=null;
+
+  localStorage.removeItem("pkmart_user");
+
+  updateAccountUI();
+
+  closeModal("accountModal");
+
+  showToast("Logged out");
+}
+
+
+/* =========================================================
+   ORDERS
+   ========================================================= */
+
+async function openOrders(){
+
+  if(!currentUser){
+
+    showToast("Please login first");
+    openAccount();
+    return;
+  }
+
+  document.getElementById("ordersModal")
+    .classList.add("show");
+
+  const list =
+    document.getElementById("ordersList");
+
+  list.innerHTML =
+    "<div class='message'>Loading orders...</div>";
+
+  const result =
+    await api("getOrders",{
+      userId:currentUser.userId
+    });
+
+  if(!result.success){
+
+    list.innerHTML =
+      "<div class='message'>Unable to load orders.</div>";
+
+    return;
+  }
+
+  if(!result.orders.length){
+
+    list.innerHTML =
+      "<div class='message'>No orders yet.</div>";
+
+    return;
+  }
+
+  list.innerHTML =
+    result.orders.map(order=>`
+
+      <div class="message" style="margin-bottom:10px">
+
+        <b>Order: ${escapeHtml(order.orderId)}</b>
+
+        <p>Total:
+          ₹${Number(order.total||0).toLocaleString("en-IN")}
+        </p>
+
+        <p>Status:
+          <b>${escapeHtml(order.orderStatus)}</b>
+        </p>
+
+        <p>Payment:
+          ${escapeHtml(order.paymentStatus)}
+        </p>
+
+        <button
+          class="secondary"
+          style="padding:9px;margin-top:8px"
+          onclick="openReturn('${escapeAttr(order.orderId)}')">
+          Return / Refund
+        </button>
+
+      </div>
+
+    `).join("");
+}
+
+
+/* =========================================================
+   RETURN
+   ========================================================= */
+
+function openReturn(orderId){
+
+  closeModal("ordersModal");
+
+  document.getElementById("returnOrderId").value =
+    orderId;
+
+  document.getElementById("returnModal")
+    .classList.add("show");
+}
+
+
+async function submitReturn(){
+
+  if(!currentUser){
+
+    showToast("Please login first");
+    return;
+  }
+
+  const orderId =
+    document.getElementById("returnOrderId").value.trim();
+
+  const productId =
+    document.getElementById("returnProductId").value.trim();
+
+  const reason =
+    document.getElementById("returnReason").value.trim();
+
+  if(!orderId || !reason){
+
+    showToast("Order ID and reason required");
+    return;
+  }
+
+  const result =
+    await api("createReturn",{
+
+      orderId,
+
+      userId:currentUser.userId,
+
+      productId,
+
+      reason,
+
+      refundAmount:0
+    });
+
+  if(result.success){
+
+    showToast("Return request submitted");
+
+    closeModal("returnModal");
+
+  }else{
+
+    showToast(
+      result.message || "Return request failed"
+    );
+  }
+}
+
+
+/* =========================================================
+   PRODUCT DETAILS
+   ========================================================= */
+
+function openProduct(id){
+
+  const p =
+    products.find(x=>String(x.productId)===String(id));
+
+  if(!p) return;
+
+  document.getElementById("productDetails").innerHTML = `
+
+    <div class="pic" style="height:280px">
+
+      ${
+        p.imageUrl
+        ? `<img src="${escapeAttr(p.imageUrl)}">`
+        : `<div class="noimg">🛍️</div>`
+      }
+
+    </div>
+
+    <h2 style="margin-top:15px">
+      ${escapeHtml(p.name)}
+    </h2>
+
+    <p style="margin-top:8px">
+      ⭐ ${Number(p.rating||0).toFixed(1)}
+    </p>
+
+    <div class="price">
+      ₹${Number(p.price||0).toLocaleString("en-IN")}
+      <span class="mrp">
+        ₹${Number(p.mrp||0).toLocaleString("en-IN")}
+      </span>
+    </div>
+
+    <p class="off">
+      ${Number(p.discount||0)}% OFF
+    </p>
+
+    <p style="margin-top:15px">
+      ${escapeHtml(p.description || "Product details available soon.")}
+    </p>
+
+    <p style="margin-top:10px">
+      Stock: ${Number(p.stock||0)}
+    </p>
+
+    <button
+      class="primary"
+      style="width:100%;margin-top:15px"
+      onclick="addToCart('${escapeAttr(p.productId)}');closeModal('productModal')">
+      Add to Cart
+    </button>
+
+  `;
+
+  document.getElementById("productModal")
+    .classList.add("show");
+}
+
+
+/* =========================================================
+   MODALS
+   ========================================================= */
+
+function closeModal(id){
+
+  document.getElementById(id)
+    .classList.remove("show");
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+let toastTimer;
+
+function showToast(message){
+
+  const t =
+    document.getElementById("toast");
+
+  t.textContent=message;
+  t.classList.add("show");
+
+  clearTimeout(toastTimer);
+
+  toastTimer =
+    setTimeout(()=>{
+      t.classList.remove("show");
+    },3000);
+}
+
+
+/* =========================================================
+   SECURITY HELPERS
+   ========================================================= */
+
+function escapeHtml(value){
+
+  return String(value ?? "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+
+function escapeAttr(value){
+
+  return escapeHtml(value);
+}
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+updateCartCount();
+updateAccountUI();
+loadProducts();
+
+</script>
+
+</body>
+  </html>
